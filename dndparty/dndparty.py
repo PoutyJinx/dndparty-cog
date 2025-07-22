@@ -8,7 +8,7 @@ class PartyView(View):
         super().__init__(timeout=None)
         self.cog = cog
 
-    @discord.ui.button(label="Join Party", style=discord.ButtonStyle.green, custom_id="join_party")
+    @discord.ui.button(label="Join Party", style=discord.ButtonStyle.green, custom_id="join_party", row=0)
     async def join(self, interaction: discord.Interaction, button: discord.ui.Button):
         user = interaction.user
         user_id = user.id
@@ -21,6 +21,19 @@ class PartyView(View):
             self.cog.party[user_id] = user
             embed = self.cog.generate_party_embed(interaction.guild)
             await interaction.response.edit_message(embed=embed, view=self)
+
+    @discord.ui.button(label="Leave Party", style=discord.ButtonStyle.red, custom_id="leave_party", row=0)
+    async def leave(self, interaction: discord.Interaction, button: discord.ui.Button):
+        user = interaction.user
+        user_id = user.id
+
+        if user_id in self.cog.party:
+            del self.cog.party[user_id]
+            embed = self.cog.generate_party_embed(interaction.guild)
+            await interaction.response.edit_message(embed=embed, view=self)
+        else:
+            await interaction.response.send_message("You’re not in the party, imposter detected.", ephemeral=True)
+
 
     @discord.ui.button(label="Leave Party", style=discord.ButtonStyle.red, custom_id="leave_party")
     async def leave(self, interaction: discord.Interaction, button: discord.ui.Button):
