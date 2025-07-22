@@ -61,13 +61,23 @@ class DndParty(commands.Cog):
         return embed
 
     @commands.hybrid_command(name="createparty")
-    async def createparty(self, ctx: commands.Context):
-        """Creates the party sign-up message with buttons."""
+    @commands.guild_only()
+    async def createparty(self, ctx: commands.Context, size: int = 6):
+        """Creates the party sign-up message with buttons.
+        Use /createparty size:<number> to set the max size (default: 6).
+        """
+        if size < 1 or size > 20:
+            await ctx.send("Party size must be between 1 and 20. Don’t get greedy.")
+            return
+
+        self.party.clear()
+        self.party_limit = size
         view = PartyView(self)
         embed = self.generate_party_embed(ctx.guild)
         await ctx.send(embed=embed, view=view)
 
     @commands.hybrid_command(name="clearparty")
+    @commands.guild_only()
     async def clearparty(self, ctx: commands.Context):
         """Clears the current party list."""
         self.party.clear()
