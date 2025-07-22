@@ -22,8 +22,8 @@ class PartyView(View):
             embed = self.cog.generate_party_embed(interaction.guild)
             await interaction.response.edit_message(embed=embed, view=self)
 
-    @discord.ui.button(label="Leave Party", style=discord.ButtonStyle.red, custom_id="leave_party", row=0)
-    async def leave(self, interaction: discord.Interaction, button: discord.ui.Button):
+    @discord.ui.button(label="Abandon Party", style=discord.ButtonStyle.red, custom_id="abandon_party", row=0)
+    async def abandon(self, interaction: discord.Interaction, button: discord.ui.Button):
         user = interaction.user
         user_id = user.id
 
@@ -32,8 +32,7 @@ class PartyView(View):
             embed = self.cog.generate_party_embed(interaction.guild)
             await interaction.response.edit_message(embed=embed, view=self)
         else:
-            await interaction.response.send_message("You’re not in the party, imposter detected.", ephemeral=True)
-
+            await interaction.response.send_message("You weren’t even in the party... nice try, shadow-dweller.", ephemeral=True)
 
 class DndParty(commands.Cog):
     def __init__(self, bot: Red):
@@ -49,15 +48,19 @@ class DndParty(commands.Cog):
         )
         if self.party:
             for member in self.party.values():
-                embed.add_field(name=member.display_name, value='\u200b', inline=True)
-            embed.set_thumbnail(url=list(self.party.values())[0].display_avatar.url)
+                avatar_url = member.display_avatar.url
+                embed.add_field(
+                    name=member.display_name,
+                    value=f"[View Avatar]({avatar_url})",
+                    inline=True
+                )
         else:
             embed.description = "No one has joined the party yet..."
         return embed
 
     @commands.command()
     async def createparty(self, ctx):
-        """Creates the party sign-up message with a button."""
+        """Creates the party sign-up message with buttons."""
         view = PartyView(self)
         embed = self.generate_party_embed(ctx.guild)
         await ctx.send(embed=embed, view=view)
