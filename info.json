@@ -1,0 +1,11 @@
+{  
+  "name": "dndparty-cog",
+  "short": "DND Party Join System",
+  "description": "Let users join a DND or gaming party using buttons. Party limit, live user display, and admin reset included.",
+  "author": ["PoutyJinx"],
+  "requirements": [],
+  "tags": ["dnd", "party", "gaming", "join", "button"],
+  "hidden": false,
+  "disabled": false,
+  "type": "COG"
+}
