@@ -3,6 +3,7 @@ from redbot.core import commands
 from redbot.core.bot import Red
 from discord.ui import View, Button
 
+
 class PartyView(View):
     def __init__(self, cog):
         super().__init__(timeout=None)
@@ -34,6 +35,7 @@ class PartyView(View):
         else:
             await interaction.response.send_message("You weren’t even in the party... nice try, shadow-dweller.", ephemeral=True)
 
+
 class DndParty(commands.Cog):
     def __init__(self, bot: Red):
         self.bot = bot
@@ -58,15 +60,15 @@ class DndParty(commands.Cog):
             embed.description = "No one has joined the party yet..."
         return embed
 
-    @commands.command()
-    async def createparty(self, ctx):
+    @commands.hybrid_command(name="createparty")
+    async def createparty(self, ctx: commands.Context):
         """Creates the party sign-up message with buttons."""
         view = PartyView(self)
         embed = self.generate_party_embed(ctx.guild)
         await ctx.send(embed=embed, view=view)
 
-    @commands.command()
-    async def clearparty(self, ctx):
+    @commands.hybrid_command(name="clearparty")
+    async def clearparty(self, ctx: commands.Context):
         """Clears the current party list."""
         self.party.clear()
         await ctx.send("The party has been cleared. Time to assemble a new crew.")
